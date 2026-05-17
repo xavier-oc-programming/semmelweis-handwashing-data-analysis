@@ -3,6 +3,7 @@
 .idea/
 .vscode/
 *.py[cod]
+*.pyc
 .env
 *.log
 .ipynb_checkpoints/
