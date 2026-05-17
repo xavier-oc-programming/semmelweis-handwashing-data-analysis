@@ -39,5 +39,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: notebook_web_render
-          destination_dir: notebook_web_render
-          keep_files: true
