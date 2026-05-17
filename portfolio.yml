@@ -6,9 +6,9 @@ featured: false
 tags: data-analysis, visualisation, python, CI-CD
 tech_stack: Python, pandas, NumPy, Matplotlib, Seaborn, Plotly, scipy, Jupyter, GitHub Actions
 repo_url: https://github.com/xavier-oc-programming/semmelweis-handwashing-data-analysis
-live_url: https://xavier-oc-programming.github.io/semmelweis-handwashing-data-analysis/notebook_web_render/
+live_url: https://xavier-oc-programming.github.io/semmelweis-handwashing-data-analysis/
 demo_url:
-notebook_url: https://xavier-oc-programming.github.io/semmelweis-handwashing-data-analysis/notebook_web_render/
+notebook_url: https://xavier-oc-programming.github.io/semmelweis-handwashing-data-analysis/
 
 short_description: |
   Re-examination of Dr Semmelweis's 1861 hospital records from Vienna General Hospital (1841–1849). Mandatory handwashing in June 1846 cut the average monthly death rate from 10.5% to 5.0% — confirmed statistically at p ≈ 0.00025.

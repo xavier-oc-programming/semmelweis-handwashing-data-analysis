@@ -242,7 +242,7 @@ English translation: http://graphics8.nytimes.com/images/blogs/freakonomics/pdf/
 ## 10. Portfolio Integration
 
 Rendered notebook (outputs and charts only, no code):
-https://xavier-oc-programming.github.io/semmelweis-handwashing-data-analysis/notebook_web_render/
+https://xavier-oc-programming.github.io/semmelweis-handwashing-data-analysis/
 
 Regenerated automatically via GitHub Actions on every commit to `notebooks/analysis/semmelweis_handwashing_analysis.ipynb`.
 

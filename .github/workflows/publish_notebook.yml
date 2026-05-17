@@ -23,22 +23,20 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: |
-          pip install jupyter nbconvert
+        run: pip install jupyter nbconvert
 
       - name: Convert notebook to HTML
         run: |
-          mkdir -p notebook_web_render
+          mkdir -p _site
           jupyter nbconvert --to html \
             --no-input \
-            --output-dir notebook_web_render \
+            --output-dir _site \
             --output index.html \
             notebooks/analysis/semmelweis_handwashing_analysis.ipynb
 
-      - name: Commit rendered notebook to main
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add notebook_web_render/index.html
-          git diff --staged --quiet || git commit -m "Update rendered notebook"
-          git push
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
