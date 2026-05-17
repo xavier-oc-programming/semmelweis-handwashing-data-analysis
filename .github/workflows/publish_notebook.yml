@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'notebooks/analysis/A_04_Distributions_and_Testing.ipynb'
+      - 'notebooks/analysis/semmelweis_handwashing_analysis.ipynb'
 
 jobs:
   publish:
@@ -29,7 +29,7 @@ jobs:
           jupyter nbconvert --to html \
             --no-input \
             --output index.html \
-            notebooks/analysis/A_04_Distributions_and_Testing.ipynb
+            notebooks/analysis/semmelweis_handwashing_analysis.ipynb
 
       - name: Move to notebook_web_render directory
         run: |

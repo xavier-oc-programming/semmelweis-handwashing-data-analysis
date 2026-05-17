@@ -42,7 +42,7 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-Open `notebooks/analysis/A_01_Preliminary_Exploration.ipynb` to begin, then follow notebooks A_02 through A_04 in sequence.
+Open `notebooks/analysis/semmelweis_handwashing_analysis.ipynb` to run the full analysis.
 
 ---
 
@@ -123,11 +123,8 @@ pipeline
 semmelweis-handwashing-data-analysis/
 │
 ├── notebooks/
-│   ├── analysis/                    # Working analysis notebooks
-│   │   ├── A_01_Preliminary_Exploration.ipynb   # Data loading, mortality rate, twin-axis chart
-│   │   ├── A_02_Yearly_Data_By_Clinic.ipynb     # Clinic comparison, pct_deaths, plotly lines
-│   │   ├── A_03_Effect_of_Handwashing.ipynb     # Before/after split, rolling average
-│   │   └── A_04_Distributions_and_Testing.ipynb # Box plot, histogram, KDE, t-test
+│   ├── analysis/
+│   │   └── semmelweis_handwashing_analysis.ipynb  # Full analysis: exploration → clinic comparison → handwashing effect → t-test
 │   │
 │   └── concepts/                    # Annotated reference notebooks
 │       ├── 00__Overview.ipynb
@@ -183,8 +180,8 @@ All charts are saved to `plots/` at 150 dpi.
 
 | Value | Location | Description |
 |-------|----------|-------------|
-| `'../../data/annual_deaths_by_clinic.csv'` | notebooks/analysis/ | Relative path to yearly dataset |
-| `'../../data/monthly_deaths.csv'` | notebooks/analysis/ | Relative path to monthly dataset |
+| `'../../data/annual_deaths_by_clinic.csv'` | semmelweis_handwashing_analysis.ipynb | Relative path to yearly dataset |
+| `'../../data/monthly_deaths.csv'` | semmelweis_handwashing_analysis.ipynb | Relative path to monthly dataset |
 | `pd.to_datetime('1846-06-01')` | A_03, A_04 | Handwashing start date |
 | `window=6` | A_03 | Rolling average window in months |
 | `'{:,.2f}'.format` | all notebooks | Float display format for pandas output |
@@ -209,11 +206,11 @@ English translation: http://graphics8.nytimes.com/images/blogs/freakonomics/pdf/
 | Module | Used in | Purpose |
 |--------|---------|---------|
 | pandas | all notebooks | DataFrames, CSV I/O, date parsing, rolling averages |
-| numpy | analysis/ | `np.where()` for categorical labelling |
-| matplotlib | A_01, A_02, A_03 | Twin-axis line charts, time axis formatting |
-| seaborn | A_04 | KDE plots with clipping |
-| plotly | A_02, A_03, A_04 | Interactive line, box, and histogram charts |
-| scipy | A_04 | `stats.ttest_ind()` — independent samples t-test |
+| numpy | semmelweis_handwashing_analysis.ipynb | `np.where()` for categorical labelling |
+| matplotlib | semmelweis_handwashing_analysis.ipynb | Twin-axis line charts, time axis formatting |
+| seaborn | semmelweis_handwashing_analysis.ipynb | KDE plots with clipping |
+| plotly | semmelweis_handwashing_analysis.ipynb | Interactive line, box, and histogram charts |
+| scipy | semmelweis_handwashing_analysis.ipynb | `stats.ttest_ind()` — independent samples t-test |
 | notebook | — | Jupyter notebook server |
 
 ---
@@ -223,13 +220,13 @@ English translation: http://graphics8.nytimes.com/images/blogs/freakonomics/pdf/
 Rendered notebook (outputs and charts only, no code):
 https://xavier-oc-programming.github.io/semmelweis-handwashing-data-analysis/notebook_web_render/
 
-Regenerated automatically via GitHub Actions on every commit to `notebooks/analysis/A_04_Distributions_and_Testing.ipynb`.
+Regenerated automatically via GitHub Actions on every commit to `notebooks/analysis/semmelweis_handwashing_analysis.ipynb`.
 
 To regenerate manually:
 
 ```bash
 jupyter nbconvert --to html --no-input \
   --output index.html \
-  notebooks/analysis/A_04_Distributions_and_Testing.ipynb
+  notebooks/analysis/semmelweis_handwashing_analysis.ipynb
 mv index.html notebook_web_render/index.html
 ```
