@@ -7332,7 +7332,12 @@ a.anchor-link {
     if (!diagrams.length) {
       return;
     }
-    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.7.0/mermaid.esm.min.mjs")).default;
+    const mermaid = (await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.0/mermaid.esm.min.mjs")).default;
+    const elkUrl = "https://cdnjs.cloudflare.com/ajax/libs/mermaid-layout-elk/0.1.9/mermaid-layout-elk.esm.min.mjs";
+    if(elkUrl) {
+      const elkLayouts = (await import(elkUrl)).default;
+      mermaid.registerLayoutLoaders(elkLayouts);
+    }
     const parser = new DOMParser();
 
     mermaid.initialize({
@@ -7429,7 +7434,8 @@ a.anchor-link {
      * Post-process to ensure mermaid diagrams contain only valid SVG and XHTML.
      */
     function cleanMermaidSvg(svg) {
-      return svg.replace(RE_VOID_ELEMENT, replaceVoidElement);
+      svg = svg.replace(RE_VOID_ELEMENT, replaceVoidElement);
+      return `${SVG_XML_HEADER}${svg}`;
     }
 
 
@@ -7455,6 +7461,285 @@ a.anchor-link {
       }
       return `<${tag} ${rest}>`;
     }
+
+
+  /**
+   * Named HTML entities with their decimal equivalent codes.
+   *
+   * @see https://www.w3.org/TR/WD-html40-970708/sgml/entities.html
+   * */
+  const HTML_ENTITIES = `<!ENTITY Aacute "&#193;">
+<!ENTITY aacute "&#225;">
+<!ENTITY Acirc "&#194;">
+<!ENTITY acirc "&#226;">
+<!ENTITY acute "&#180;">
+<!ENTITY AElig "&#198;">
+<!ENTITY aelig "&#230;">
+<!ENTITY Agrave "&#192;">
+<!ENTITY agrave "&#224;">
+<!ENTITY alefsym "&#8501;">
+<!ENTITY Alpha "&#913;">
+<!ENTITY alpha "&#945;">
+<!ENTITY amp "&#38;">
+<!ENTITY and "&#8869;">
+<!ENTITY ang "&#8736;">
+<!ENTITY Aring "&#197;">
+<!ENTITY aring "&#229;">
+<!ENTITY asymp "&#8776;">
+<!ENTITY Atilde "&#195;">
+<!ENTITY atilde "&#227;">
+<!ENTITY Auml "&#196;">
+<!ENTITY auml "&#228;">
+<!ENTITY bdquo "&#8222;">
+<!ENTITY Beta "&#914;">
+<!ENTITY beta "&#946;">
+<!ENTITY brvbar "&#166;">
+<!ENTITY bull "&#8226;">
+<!ENTITY cap "&#8745;">
+<!ENTITY Ccedil "&#199;">
+<!ENTITY ccedil "&#231;">
+<!ENTITY cedil "&#184;">
+<!ENTITY cent "&#162;">
+<!ENTITY Chi "&#935;">
+<!ENTITY chi "&#967;">
+<!ENTITY circ "&#710;">
+<!ENTITY clubs "&#9827;">
+<!ENTITY cong "&#8773;">
+<!ENTITY copy "&#169;">
+<!ENTITY crarr "&#8629;">
+<!ENTITY cup "&#8746;">
+<!ENTITY curren "&#164;">
+<!ENTITY dagger "&#8224;">
+<!ENTITY Dagger "&#8225;">
+<!ENTITY darr "&#8595;">
+<!ENTITY dArr "&#8659;">
+<!ENTITY deg "&#176;">
+<!ENTITY Delta "&#916;">
+<!ENTITY delta "&#948;">
+<!ENTITY diams "&#9830;">
+<!ENTITY divide "&#247;">
+<!ENTITY Eacute "&#201;">
+<!ENTITY eacute "&#233;">
+<!ENTITY Ecirc "&#202;">
+<!ENTITY ecirc "&#234;">
+<!ENTITY Egrave "&#200;">
+<!ENTITY egrave "&#232;">
+<!ENTITY empty "&#8709;">
+<!ENTITY emsp "&#8195;">
+<!ENTITY ensp "&#8194;">
+<!ENTITY epsilon "&#949;">
+<!ENTITY Epsilon "&#917;">
+<!ENTITY equiv "&#8801;">
+<!ENTITY Eta "&#919;">
+<!ENTITY eta "&#951;">
+<!ENTITY ETH "&#208;">
+<!ENTITY eth "&#240;">
+<!ENTITY Euml "&#203;">
+<!ENTITY euml "&#235;">
+<!ENTITY exist "&#8707;">
+<!ENTITY fnof "&#402;">
+<!ENTITY forall "&#8704;">
+<!ENTITY frac12 "&#189;">
+<!ENTITY frac14 "&#188;">
+<!ENTITY frac34 "&#190;">
+<!ENTITY frasl "&#8260;">
+<!ENTITY Gamma "&#915;">
+<!ENTITY gamma "&#947;">
+<!ENTITY ge "&#8805;">
+<!ENTITY gt "&#62;">
+<!ENTITY harr "&#8596;">
+<!ENTITY hArr "&#8660;">
+<!ENTITY hearts "&#9829;">
+<!ENTITY hellip "&#8230;">
+<!ENTITY Iacute "&#205;">
+<!ENTITY iacute "&#237;">
+<!ENTITY Icirc "&#206;">
+<!ENTITY icirc "&#238;">
+<!ENTITY iexcl "&#161;">
+<!ENTITY Igrave "&#204;">
+<!ENTITY igrave "&#236;">
+<!ENTITY image "&#8465;">
+<!ENTITY infin "&#8734;">
+<!ENTITY int "&#8747;">
+<!ENTITY Iota "&#921;">
+<!ENTITY iota "&#953;">
+<!ENTITY iquest "&#191;">
+<!ENTITY isin "&#8712;">
+<!ENTITY Iuml "&#207;">
+<!ENTITY iuml "&#239;">
+<!ENTITY Kappa "&#922;">
+<!ENTITY kappa "&#954;">
+<!ENTITY Lambda "&#923;">
+<!ENTITY lambda "&#955;">
+<!ENTITY lang "&#9001;">
+<!ENTITY laquo "&#171;">
+<!ENTITY larr "&#8592;">
+<!ENTITY lArr "&#8656;">
+<!ENTITY lceil "&#8968;">
+<!ENTITY ldquo "&#8220;">
+<!ENTITY le "&#8804;">
+<!ENTITY lfloor "&#8970;">
+<!ENTITY lowast "&#8727;">
+<!ENTITY loz "&#9674;">
+<!ENTITY lrm "&#8206;">
+<!ENTITY lsaquo "&#8249;">
+<!ENTITY lsquo "&#8216;">
+<!ENTITY lt "&#60;">
+<!ENTITY macr "&#175;">
+<!ENTITY mdash "&#8212;">
+<!ENTITY micro "&#181;">
+<!ENTITY middot "&#183;">
+<!ENTITY minus "&#8722;">
+<!ENTITY Mu "&#924;">
+<!ENTITY mu "&#956;">
+<!ENTITY nabla "&#8711;">
+<!ENTITY nbsp "&#160;">
+<!ENTITY ndash "&#8211;">
+<!ENTITY ne "&#8800;">
+<!ENTITY ni "&#8715;">
+<!ENTITY not "&#172;">
+<!ENTITY notin "&#8713;">
+<!ENTITY nsub "&#8836;">
+<!ENTITY Ntilde "&#209;">
+<!ENTITY ntilde "&#241;">
+<!ENTITY Nu "&#925;">
+<!ENTITY nu "&#957;">
+<!ENTITY Oacute "&#211;">
+<!ENTITY oacute "&#243;">
+<!ENTITY Ocirc "&#212;">
+<!ENTITY ocirc "&#244;">
+<!ENTITY OElig "&#338;">
+<!ENTITY oelig "&#339;">
+<!ENTITY Ograve "&#210;">
+<!ENTITY ograve "&#242;">
+<!ENTITY oline "&#8254;">
+<!ENTITY Omega "&#937;">
+<!ENTITY omega "&#969;">
+<!ENTITY Omicron "&#927;">
+<!ENTITY omicron "&#959;">
+<!ENTITY oplus "&#8853;">
+<!ENTITY or "&#8870;">
+<!ENTITY ordf "&#170;">
+<!ENTITY ordm "&#186;">
+<!ENTITY Oslash "&#216;">
+<!ENTITY oslash "&#248;">
+<!ENTITY Otilde "&#213;">
+<!ENTITY otilde "&#245;">
+<!ENTITY otimes "&#8855;">
+<!ENTITY Ouml "&#214;">
+<!ENTITY ouml "&#246;">
+<!ENTITY para "&#182;">
+<!ENTITY part "&#8706;">
+<!ENTITY permil "&#8240;">
+<!ENTITY perp "&#8869;">
+<!ENTITY Phi "&#934;">
+<!ENTITY phi "&#966;">
+<!ENTITY Pi "&#928;">
+<!ENTITY pi "&#960;">
+<!ENTITY piv "&#982;">
+<!ENTITY plusmn "&#177;">
+<!ENTITY pound "&#163;">
+<!ENTITY prime "&#8242;">
+<!ENTITY Prime "&#8243;">
+<!ENTITY prod "&#8719;">
+<!ENTITY prop "&#8733;">
+<!ENTITY Psi "&#936;">
+<!ENTITY psi "&#968;">
+<!ENTITY quot "&#34;">
+<!ENTITY radic "&#8730;">
+<!ENTITY rang "&#9002;">
+<!ENTITY raquo "&#187;">
+<!ENTITY rarr "&#8594;">
+<!ENTITY rArr "&#8658;">
+<!ENTITY rceil "&#8969;">
+<!ENTITY rdquo "&#8221;">
+<!ENTITY real "&#8476;">
+<!ENTITY reg "&#174;">
+<!ENTITY rfloor "&#8971;">
+<!ENTITY Rho "&#929;">
+<!ENTITY rho "&#961;">
+<!ENTITY rlm "&#8207;">
+<!ENTITY rsaquo "&#8250;">
+<!ENTITY rsquo "&#8217;">
+<!ENTITY sbquo "&#8218;">
+<!ENTITY Scaron "&#352;">
+<!ENTITY scaron "&#353;">
+<!ENTITY sdot "&#8901;">
+<!ENTITY sect "&#167;">
+<!ENTITY shy "&#173;">
+<!ENTITY Sigma "&#931;">
+<!ENTITY sigma "&#963;">
+<!ENTITY sigmaf "&#962;">
+<!ENTITY sim "&#8764;">
+<!ENTITY spades "&#9824;">
+<!ENTITY sub "&#8834;">
+<!ENTITY sube "&#8838;">
+<!ENTITY sum "&#8721;">
+<!ENTITY sup "&#8835;">
+<!ENTITY sup1 "&#185;">
+<!ENTITY sup2 "&#178;">
+<!ENTITY sup3 "&#179;">
+<!ENTITY supe "&#8839;">
+<!ENTITY szlig "&#223;">
+<!ENTITY Tau "&#932;">
+<!ENTITY tau "&#964;">
+<!ENTITY there4 "&#8756;">
+<!ENTITY Theta "&#920;">
+<!ENTITY theta "&#952;">
+<!ENTITY thetasym "&#977;">
+<!ENTITY thinsp "&#8201;">
+<!ENTITY THORN "&#222;">
+<!ENTITY thorn "&#254;">
+<!ENTITY tilde "&#732;">
+<!ENTITY times "&#215;">
+<!ENTITY trade "&#8482;">
+<!ENTITY Uacute "&#218;">
+<!ENTITY uacute "&#250;">
+<!ENTITY uarr "&#8593;">
+<!ENTITY uArr "&#8657;">
+<!ENTITY Ucirc "&#219;">
+<!ENTITY ucirc "&#251;">
+<!ENTITY Ugrave "&#217;">
+<!ENTITY ugrave "&#249;">
+<!ENTITY uml "&#168;">
+<!ENTITY upsih "&#978;">
+<!ENTITY Upsilon "&#933;">
+<!ENTITY upsilon "&#965;">
+<!ENTITY Uuml "&#220;">
+<!ENTITY uuml "&#252;">
+<!ENTITY weierp "&#8472;">
+<!ENTITY Xi "&#926;">
+<!ENTITY xi "&#958;">
+<!ENTITY Yacute "&#221;">
+<!ENTITY yacute "&#253;">
+<!ENTITY yen "&#165;">
+<!ENTITY Yuml "&#376;">
+<!ENTITY yuml "&#255;">
+<!ENTITY Zeta "&#918;">
+<!ENTITY zeta "&#950;">
+<!ENTITY zwj "&#8205;">
+<!ENTITY zwnj "&#8204;">`.replace(/\n/g, ' ');
+
+  /**
+   * A reasonably strict xml declaration.
+   */
+  const XML_DECL = '<?xml version="1.0" standalone="no"?>';
+
+  /**
+   * The beginning of the XML doctype declaration.
+   */
+  const DOCTYPE_START = `<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [`;
+
+  /**
+   * The end of the XML docype declaration.
+   */
+  const DOCTYPE_END = ']>';
+
+  /**
+   * A full header for an SVG XML document.
+   */
+  const SVG_XML_HEADER = `${XML_DECL}
+    ${DOCTYPE_START}${HTML_ENTITIES}${DOCTYPE_END}`;
 
     void Promise.all([...diagrams].map(renderOneMarmaid));
   });
@@ -7587,297 +7872,6 @@ a.anchor-link {
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Preliminary-Data-Exploration">Preliminary Data Exploration<a class="anchor-link" href="#Preliminary-Data-Exploration">¶</a></h1><p>Inspect both DataFrames to understand their structure before any computation. The goal is to establish the shape of the data, confirm there are no nulls or duplicates, and get a first sense of average birth and death volumes.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Check-for-Nan-Values-and-Duplicates">Check for Nan Values and Duplicates<a class="anchor-link" href="#Check-for-Nan-Values-and-Duplicates">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Descriptive-Statistics">Descriptive Statistics<a class="anchor-link" href="#Descriptive-Statistics">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Mortality-Rate-in-1840s-Vienna">Mortality Rate in 1840s Vienna<a class="anchor-link" href="#Mortality-Rate-in-1840s-Vienna">¶</a></h3><p>Using the aggregate yearly data, compute the overall probability of dying during childbirth across both clinics for the full recorded period. For comparison, the United States recorded 18.5 maternal deaths per 100,000 (0.018%) in 2013.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Visualise-the-Total-Number-of-Births-%F0%9F%A4%B1-and-Deaths-%F0%9F%92%80-over-Time">Visualise the Total Number of Births 🤱 and Deaths 💀 over Time<a class="anchor-link" href="#Visualise-the-Total-Number-of-Births-%F0%9F%A4%B1-and-Deaths-%F0%9F%92%80-over-Time">¶</a></h1>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Monthly-Births-and-Deaths-Over-Time">Monthly Births and Deaths Over Time<a class="anchor-link" href="#Monthly-Births-and-Deaths-Over-Time">¶</a></h3><p>Plot births and deaths on twin y-axes over the full 1841–1849 period. Twin axes are needed because the two series have different scales — using a single axis would compress the death counts into noise at the bottom of the chart.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Setup-and-Context">Setup and Context<a class="anchor-link" href="#Setup-and-Context">¶</a></h1><img alt="No description has been provided for this image" src="https://i.imgur.com/gugIA5r.png" width="700"/>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_context" data-mime-type="text/markdown">
-<h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h3><p>Dr Ignaz Semmelweis was a Hungarian physician born in 1818 who worked in the Vienna General Hospital. In the past people thought of illness as caused by "bad air" or evil spirits. But in the 1800s Doctors started looking more at anatomy, doing autopsies and started making arguments based on data. Dr Semmelweis suspected that something was going wrong with the procedures at Vienna General Hospital. Semmelweis wanted to figure out why so many women in maternity wards were dying from childbed fever (i.e., <a href="https://en.wikipedia.org/wiki/Postpartum_infections">puerperal fever</a>).</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/lSyNUwR.png" width="700"/>
-<p>Today you will become Dr Semmelweis. This is your office 👆. You will step into Dr Semmelweis' shoes and analyse the same data collected from 1841 to 1849.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="The-Data-Source">The Data Source<a class="anchor-link" href="#The-Data-Source">¶</a></h3><p>Dr Semmelweis published his research in 1861. I found the scanned pages of the <a href="http://www.deutschestextarchiv.de/book/show/semmelweis_kindbettfieber_1861">full text with the original tables in German</a>, but an excellent <a href="http://graphics8.nytimes.com/images/blogs/freakonomics/pdf/the%20etiology,%20concept%20and%20prophylaxis%20of%20childbed%20fever.pdf">English translation can be found here</a>.</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/6HfLtaC.png" width="500"/>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Upgrade-plotly-(only-Google-Colab-Notebook)">Upgrade plotly (only Google Colab Notebook)<a class="anchor-link" href="#Upgrade-plotly-(only-Google-Colab-Notebook)">¶</a></h3><p>Google Colab may not be running the latest version of plotly. If you're working in Google Colab, uncomment the line below, run the cell, and restart your notebook server.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Import-Statements">Import Statements<a class="anchor-link" href="#Import-Statements">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Notebook-Presentation">Notebook Presentation<a class="anchor-link" href="#Notebook-Presentation">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Read-the-Data">Read the Data<a class="anchor-link" href="#Read-the-Data">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Annual-Births-and-Deaths-by-Clinic">Annual Births and Deaths by Clinic<a class="anchor-link" href="#Annual-Births-and-Deaths-by-Clinic">¶</a></h1><p>The hospital's two clinics operated under fundamentally different staffing models. Clinic 1 was run by doctors and medical students who also performed autopsies; Clinic 2 was staffed by midwives with no autopsy contact. Plotting births and deaths separately for each clinic reveals whether that structural difference shows up in the mortality data.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_context" data-mime-type="text/markdown">
-<h3 id="Calculate-the-Proportion-of-Deaths-at-Each-Clinic">Calculate the Proportion of Deaths at Each Clinic<a class="anchor-link" href="#Calculate-the-Proportion-of-Deaths-at-Each-Clinic">¶</a></h3>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Death-Rate-as-a-Proportion-of-Births">Death Rate as a Proportion of Births<a class="anchor-link" href="#Death-Rate-as-a-Proportion-of-Births">¶</a></h3><p>Raw death counts are misleading if the two clinics had different patient volumes. Dividing deaths by births gives a comparable proportion — <code>pct_deaths</code> — that normalises for size and makes clinic-to-clinic comparison valid.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Plotting-the-Proportion-of-Yearly-Deaths-by-Clinic">Plotting the Proportion of Yearly Deaths by Clinic<a class="anchor-link" href="#Plotting-the-Proportion-of-Yearly-Deaths-by-Clinic">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Setup-and-Context">Setup and Context<a class="anchor-link" href="#Setup-and-Context">¶</a></h1><img alt="No description has been provided for this image" src="https://i.imgur.com/gugIA5r.png" width="700"/>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_context" data-mime-type="text/markdown">
-<h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h3><p>Dr Ignaz Semmelweis was a Hungarian physician born in 1818 who worked in the Vienna General Hospital. In the past people thought of illness as caused by "bad air" or evil spirits. But in the 1800s Doctors started looking more at anatomy, doing autopsies and started making arguments based on data. Dr Semmelweis suspected that something was going wrong with the procedures at Vienna General Hospital. Semmelweis wanted to figure out why so many women in maternity wards were dying from childbed fever (i.e., <a href="https://en.wikipedia.org/wiki/Postpartum_infections">puerperal fever</a>).</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/lSyNUwR.png" width="700"/>
-<p>Today you will become Dr Semmelweis. This is your office 👆. You will step into Dr Semmelweis' shoes and analyse the same data collected from 1841 to 1849.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="The-Data-Source">The Data Source<a class="anchor-link" href="#The-Data-Source">¶</a></h3><p>Dr Semmelweis published his research in 1861. I found the scanned pages of the <a href="http://www.deutschestextarchiv.de/book/show/semmelweis_kindbettfieber_1861">full text with the original tables in German</a>, but an excellent <a href="http://graphics8.nytimes.com/images/blogs/freakonomics/pdf/the%20etiology,%20concept%20and%20prophylaxis%20of%20childbed%20fever.pdf">English translation can be found here</a>.</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/6HfLtaC.png" width="500"/>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Upgrade-plotly-(only-Google-Colab-Notebook)">Upgrade plotly (only Google Colab Notebook)<a class="anchor-link" href="#Upgrade-plotly-(only-Google-Colab-Notebook)">¶</a></h3><p>Google Colab may not be running the latest version of plotly. If you're working in Google Colab, uncomment the line below, run the cell, and restart your notebook server.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Import-Statements">Import Statements<a class="anchor-link" href="#Import-Statements">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Notebook-Presentation">Notebook Presentation<a class="anchor-link" href="#Notebook-Presentation">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Read-the-Data">Read the Data<a class="anchor-link" href="#Read-the-Data">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_context" data-mime-type="text/markdown">
-<h1 id="The-Effect-of-Handwashing">The Effect of Handwashing<a class="anchor-link" href="#The-Effect-of-Handwashing">¶</a></h1><p>Dr Semmelweis made handwashing obligatory in the summer of 1947. In fact, he ordered people to wash their hands with clorine (instead of water).</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Measuring-the-Effect:-Before-and-After-June-1846">Measuring the Effect: Before and After June 1846<a class="anchor-link" href="#Measuring-the-Effect:-Before-and-After-June-1846">¶</a></h3><p>To isolate the handwashing effect, the monthly data is split at June 1846 — the date Semmelweis made chlorine handwashing mandatory. Computing <code>pct_deaths</code> for each month gives a normalised rate that can be compared across the two periods regardless of how many patients each month had.</p>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
@@ -7889,7 +7883,12 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Calculate-a-Rolling-Average-of-the-Death-Rate">Calculate a Rolling Average of the Death Rate<a class="anchor-link" href="#Calculate-a-Rolling-Average-of-the-Death-Rate">¶</a></h3>
+<h3 id="Use-Box-Plots-to-Show-How-the-Death-Rate-Changed-Before-and-After-Handwashing">Use Box Plots to Show How the Death Rate Changed Before and After Handwashing<a class="anchor-link" href="#Use-Box-Plots-to-Show-How-the-Death-Rate-Changed-Before-and-After-Handwashing">¶</a></h3><p><strong>Challenge</strong>:</p>
+<ul>
+<li>Use <a href="https://numpy.org/doc/stable/reference/generated/numpy.where.html">NumPy's <code>.where()</code> function</a> to add a column to <code>df_monthly</code> that shows if a particular date was before or after the start of handwashing.</li>
+<li>Then use plotly to create box plot of the data before and after handwashing.</li>
+<li>How did key statistics like the mean, max, min, 1st and 3rd quartile changed as a result of the new policy?</li>
+</ul>
 </div>
 </div>
 </div>
@@ -7901,7 +7900,14 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Six-Month-Rolling-Average-of-Monthly-Death-Rate">Six-Month Rolling Average of Monthly Death Rate<a class="anchor-link" href="#Six-Month-Rolling-Average-of-Monthly-Death-Rate">¶</a></h3><p>A 6-month rolling average smooths out month-to-month noise and reveals the underlying trend more clearly. The date column must be set as the index before computing <code>.rolling()</code>, otherwise pandas drops it during the aggregation.</p>
+<h3 id="Use-Histograms-to-Visualise-the-Monthly-Distribution-of-Outcomes">Use Histograms to Visualise the Monthly Distribution of Outcomes<a class="anchor-link" href="#Use-Histograms-to-Visualise-the-Monthly-Distribution-of-Outcomes">¶</a></h3><p><strong>Challenge</strong>: Create a <a href="https://plotly.com/python/histograms/">plotly histogram</a> to show the monthly percentage of deaths.</p>
+<ul>
+<li>Use docs to check out the available parameters. Use the <a href="https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html"><code>color</code> parameter</a> to display two overlapping histograms.</li>
+<li>The time period of handwashing is shorter than not handwashing. Change <code>histnorm</code> to <code>percent</code> to make the time periods comparable.</li>
+<li>Make the histograms slighlty transparent</li>
+<li>Experiment with the number of bins on the histogram. Which number work well in communicating the range of outcomes?</li>
+<li>Just for fun, display your box plot on the top of the histogram using the <code>marginal</code> parameter.</li>
+</ul>
 </div>
 </div>
 </div>
@@ -7912,111 +7918,12 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Visualising-the-Before/After-Split">Visualising the Before/After Split<a class="anchor-link" href="#Visualising-the-Before/After-Split">¶</a></h3><p>Plotting the three series together — raw rate before handwashing, raw rate after, and the 6-month moving average — makes the structural break at June 1846 immediately visible. The moving average line shows the trend was already volatile before handwashing; the post-1846 series shows a sustained lower level.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_context" data-mime-type="text/markdown">
-<h3 id="Quantifying-the-Reduction-in-Death-Rate">Quantifying the Reduction in Death Rate<a class="anchor-link" href="#Quantifying-the-Reduction-in-Death-Rate">¶</a></h3><p>With the data split at June 1846, compute the mean monthly death rate in each period and the absolute and relative difference. This gives a plain-English measure of the handwashing effect before the formal hypothesis test in A_04.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Setup-and-Context">Setup and Context<a class="anchor-link" href="#Setup-and-Context">¶</a></h1><img alt="No description has been provided for this image" src="https://i.imgur.com/gugIA5r.png" width="700"/>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_context" data-mime-type="text/markdown">
-<h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h3><p>Dr Ignaz Semmelweis was a Hungarian physician born in 1818 who worked in the Vienna General Hospital. In the past people thought of illness as caused by "bad air" or evil spirits. But in the 1800s Doctors started looking more at anatomy, doing autopsies and started making arguments based on data. Dr Semmelweis suspected that something was going wrong with the procedures at Vienna General Hospital. Semmelweis wanted to figure out why so many women in maternity wards were dying from childbed fever (i.e., <a href="https://en.wikipedia.org/wiki/Postpartum_infections">puerperal fever</a>).</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/lSyNUwR.png" width="700"/>
-<p>Today you will become Dr Semmelweis. This is your office 👆. You will step into Dr Semmelweis' shoes and analyse the same data collected from 1841 to 1849.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="The-Data-Source">The Data Source<a class="anchor-link" href="#The-Data-Source">¶</a></h3><p>Dr Semmelweis published his research in 1861. I found the scanned pages of the <a href="http://www.deutschestextarchiv.de/book/show/semmelweis_kindbettfieber_1861">full text with the original tables in German</a>, but an excellent <a href="http://graphics8.nytimes.com/images/blogs/freakonomics/pdf/the%20etiology,%20concept%20and%20prophylaxis%20of%20childbed%20fever.pdf">English translation can be found here</a>.</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/6HfLtaC.png" width="500"/>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Upgrade-plotly-(only-Google-Colab-Notebook)">Upgrade plotly (only Google Colab Notebook)<a class="anchor-link" href="#Upgrade-plotly-(only-Google-Colab-Notebook)">¶</a></h3><p>Google Colab may not be running the latest version of plotly. If you're working in Google Colab, uncomment the line below, run the cell, and restart your notebook server.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Import-Statements">Import Statements<a class="anchor-link" href="#Import-Statements">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Notebook-Presentation">Notebook Presentation<a class="anchor-link" href="#Notebook-Presentation">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Read-the-Data">Read the Data<a class="anchor-link" href="#Read-the-Data">¶</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Box-Plot:-Distribution-Shift-Before-and-After-Handwashing">Box Plot: Distribution Shift Before and After Handwashing<a class="anchor-link" href="#Box-Plot:-Distribution-Shift-Before-and-After-Handwashing">¶</a></h3><p>A box plot condenses each period's distribution into five summary statistics — median, IQR, min, max — making it easy to see whether the entire distribution shifted or just one tail changed. <code>np.where()</code> adds a categorical label so plotly can split the data by period.</p>
+<h3 id="Use-a-Kernel-Density-Estimate-(KDE)-to-visualise-a-smooth-distribution">Use a Kernel Density Estimate (KDE) to visualise a smooth distribution<a class="anchor-link" href="#Use-a-Kernel-Density-Estimate-(KDE)-to-visualise-a-smooth-distribution">¶</a></h3><p><strong>Challenge</strong>: Use <a href="https://seaborn.pydata.org/generated/seaborn.kdeplot.html">Seaborn's <code>.kdeplot()</code></a> to create two kernel density estimates of the <code>pct_deaths</code>, one for before handwashing and one for after.</p>
+<ul>
+<li>Use the <code>shade</code> parameter to give your two distributions different colours.</li>
+<li>What weakness in the chart do you see when you just use the default parameters?</li>
+<li>Use the <code>clip</code> parameter to address the problem.</li>
+</ul>
 </div>
 </div>
 </div>
@@ -8028,18 +7935,13 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Histogram:-Monthly-Death-Rate-Distribution">Histogram: Monthly Death Rate Distribution<a class="anchor-link" href="#Histogram:-Monthly-Death-Rate-Distribution">¶</a></h3><p>A histogram shows the frequency of each death-rate band across all months. Because the post-handwashing period is shorter than the pre-handwashing period, <code>histnorm='percent'</code> normalises both distributions to percentages so the two can be fairly compared on the same axis.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Kernel-Density-Estimate-of-Monthly-Death-Rates">Kernel Density Estimate of Monthly Death Rates<a class="anchor-link" href="#Kernel-Density-Estimate-of-Monthly-Death-Rates">¶</a></h3><p>A KDE produces a smooth probability density curve from the data points. Without clipping, the estimate extends into negative death-rate territory — a physical impossibility. The <code>clip=(0, 1)</code> parameter constrains the estimate to the valid range and produces a more honest representation of each period's distribution.</p>
+<h3 id="Use-a-T-Test-to-Show-Statistical-Significance">Use a T-Test to Show Statistical Significance<a class="anchor-link" href="#Use-a-T-Test-to-Show-Statistical-Significance">¶</a></h3><p><strong>Challenge</strong>: Use a t-test to determine if the differences in the means are statistically significant or purely due to chance.</p>
+<p>If the p-value is less than 1% then we can be 99% certain that handwashing has made a difference to the average monthly death rate.</p>
+<ul>
+<li>Import <code>stats</code> from scipy</li>
+<li>Use the <a href="https://docs.scipy.org/%5Ddoc/scipy/reference/generated/scipy.stats.ttest_ind.html"><code>.ttest_ind()</code> function</a> to calculate the t-statistic and the p-value</li>
+<li>Is the difference in the average proportion of monthly deaths statistically significant at the 99% level?</li>
+</ul>
 </div>
 </div>
 </div>
@@ -8051,25 +7953,13 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Statistical-Significance:-Independent-Samples-T-Test">Statistical Significance: Independent Samples T-Test<a class="anchor-link" href="#Statistical-Significance:-Independent-Samples-T-Test">¶</a></h3><p>A visual drop in the mean is not proof on its own — the difference could be due to random month-to-month variation. An independent-samples t-test formalises the question: if handwashing had no real effect, what is the probability of observing a difference this large? A p-value below 1% means we can be 99% confident the effect is real.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="T-Test-Breakdown-%E2%80%94-Statistical-Significance-of-the-Handwashing-Effect">T-Test Breakdown — Statistical Significance of the Handwashing Effect<a class="anchor-link" href="#T-Test-Breakdown-%E2%80%94-Statistical-Significance-of-the-Handwashing-Effect">¶</a></h2><h3 id="Why-Do-We-Need-a-Statistical-Test?">Why Do We Need a Statistical Test?<a class="anchor-link" href="#Why-Do-We-Need-a-Statistical-Test?">¶</a></h3><p>We already saw that:</p>
+<h2 id="T-TEST-BREAKDOWN%E2%80%94%E2%80%94Use-a-T-Test-to-Show-Statistical-Significance**">T TEST BREAKDOWN——Use a T-Test to Show Statistical Significance**<a class="anchor-link" href="#T-TEST-BREAKDOWN%E2%80%94%E2%80%94Use-a-T-Test-to-Show-Statistical-Significance**">¶</a></h2><h3 id="Why-Do-We-Need-a-Statistical-Test?">Why Do We Need a Statistical Test?<a class="anchor-link" href="#Why-Do-We-Need-a-Statistical-Test?">¶</a></h3><p>We already saw that:</p>
 <ul>
 <li>Average death rate <strong>before</strong> handwashing ≈ 10.5%</li>
 <li>Average death rate <strong>after</strong> handwashing ≈ 5%</li>
 </ul>
 <p>That looks like a huge drop.</p>
-<p>But here's the key question:</p>
+<p>But here’s the key question:</p>
 <blockquote>
 <p>Is this difference real… or could it just be random fluctuation?</p>
 </blockquote>
@@ -8150,7 +8040,7 @@ p =
 <p>$[
 \nu = n_1 + n_2 - 2
 ]$</p>
-<p>If Welch's version is used (<code>equal_var=False</code>), the degrees of freedom are approximated using:</p>
+<p>If Welch’s version is used (<code>equal_var=False</code>), the degrees of freedom are approximated using:</p>
 <p>$[
 \nu \approx
 \frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}
@@ -8177,14 +8067,14 @@ p &lt; 0.01
 <li>The data strongly supports the idea that handwashing reduced mortality.</li>
 </ul>
 <hr/>
-<h2 id="Why-This-Is-So-Powerful-Historically">Why This Is So Powerful Historically<a class="anchor-link" href="#Why-This-Is-So-Powerful-Historically">¶</a></h2><p>Semmelweis didn't just observe a drop.</p>
+<h2 id="Why-This-Is-So-Powerful-Historically">Why This Is So Powerful Historically<a class="anchor-link" href="#Why-This-Is-So-Powerful-Historically">¶</a></h2><p>Semmelweis didn’t just observe a drop.</p>
 <p>He could have said:</p>
 <blockquote>
 <p>The probability this happened by chance is 0.025%.</p>
 </blockquote>
 <p>That is overwhelming statistical evidence.</p>
 <hr/>
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">¶</a></h2><h3 id="What-We-Did">What We Did<a class="anchor-link" href="#What-We-Did">¶</a></h3><ol>
+<h2 id="Beginner-Level-Summary">Beginner-Level Summary<a class="anchor-link" href="#Beginner-Level-Summary">¶</a></h2><h3 id="What-We-Did">What We Did<a class="anchor-link" href="#What-We-Did">¶</a></h3><ol>
 <li>Calculated monthly death rates.</li>
 <li>Split data into before and after.</li>
 <li>Compared averages.</li>
@@ -8199,6 +8089,8 @@ p &lt; 0.01
 <li>Our p-value is extremely small.</li>
 <li>Therefore: handwashing made a real difference.</li>
 </ul>
+<hr/>
+<p>If you'd like, next we can add a small visual intuition section explaining the t-distribution curve graphically so you fully <em>feel</em> what that p-value represents.</p>
 </div>
 </div>
 </div>
@@ -8214,20 +8106,6 @@ p &lt; 0.01
 </div>
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs jp-mod-noInput">
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Key-Findings">Key Findings<a class="anchor-link" href="#Key-Findings">¶</a></h1><p><strong>Mortality rate in 1840s Vienna</strong>: roughly 1 in 10 women who gave birth at Vienna General Hospital died — compared to 0.018% in the modern United States.</p>
-<p><strong>Clinic gap</strong>: Clinic 1 (doctors performing autopsies) averaged a death rate approximately 3× higher than Clinic 2 (midwives with no autopsy contact), pointing directly to contamination from the autopsy room as the mechanism.</p>
-<p><strong>Effect of handwashing</strong>: mandatory chlorine handwashing introduced in June 1846 cut the average monthly death rate from <strong>≈ 10.5% to ≈ 5.0%</strong> — an absolute reduction of roughly 5.5 percentage points, or approximately a twofold improvement in survival odds.</p>
-<p><strong>Statistical significance</strong>: an independent-samples t-test yields <strong>t ≈ 3.80, p ≈ 0.00025</strong>. At the 99% confidence level the null hypothesis is rejected — the reduction is not attributable to random variation.</p>
-<p><strong>Historical weight</strong>: Semmelweis's data provided what was, at the time, overwhelming quantitative evidence that a simple procedural change could halve the death rate in a maternity ward. The p-value of 0.025% means that if handwashing had no real effect, the probability of observing this outcome by chance alone is vanishingly small.</p>
-</div>
-</div>
-</div>
 </div>
 </main>
 </body>
