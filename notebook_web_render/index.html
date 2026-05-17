@@ -7811,9 +7811,9 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput celltag_context" data-mime-type="text/markdown">
-<h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h3><p>Dr Ignaz Semmelweis was a Hungarian physician born in 1818 who worked in the Vienna General Hospital. In the past people thought of illness as caused by "bad air" or evil spirits. But in the 1800s Doctors started looking more at anatomy, doing autopsies and started making arguments based on data. Dr Semmelweis suspected that something was going wrong with the procedures at Vienna General Hospital. Semmelweis wanted to figure out why so many women in maternity wards were dying from childbed fever (i.e., <a href="https://en.wikipedia.org/wiki/Postpartum_infections">puerperal fever</a>).</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/lSyNUwR.png" width="700"/>
-<p>Today you will become Dr Semmelweis. This is your office 👆. You will step into Dr Semmelweis' shoes and analyse the same data collected from 1841 to 1849.</p>
+<h3 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">¶</a></h3><p>Dr Ignaz Semmelweis was a Hungarian physician born in 1818 who worked in the Vienna General Hospital. At a time when illness was still attributed to "bad air" or miasma, Semmelweis was building a case from numbers — and something in those numbers was deeply wrong.</p>
+<p>In the early 1840s, one in ten women who gave birth at Vienna General Hospital died from childbed fever (<a href="https://en.wikipedia.org/wiki/Postpartum_infections">puerperal fever</a>). That rate fluctuated month to month, but it never went away. Semmelweis noticed it wasn't uniform across the hospital. Two maternity clinics sat side by side — same building, same city — and their mortality records looked nothing alike.</p>
+<p>This analysis re-examines the same data Semmelweis published in 1861, covering monthly birth and death counts from 1841 to 1849. I want to see whether the numbers, examined fresh today, support the conclusion he drew: that a single procedural change — mandatory handwashing with chlorinated lime — was the difference between life and death.</p>
 </div>
 </div>
 </div>
@@ -7834,7 +7834,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Upgrade-plotly-(only-Google-Colab-Notebook)">Upgrade plotly (only Google Colab Notebook)<a class="anchor-link" href="#Upgrade-plotly-(only-Google-Colab-Notebook)">¶</a></h3><p>Google Colab may not be running the latest version of plotly. If you're working in Google Colab, uncomment the line below, run the cell, and restart your notebook server.</p>
+<h3 id="Environment-Setup">Environment Setup<a class="anchor-link" href="#Environment-Setup">¶</a></h3>
 </div>
 </div>
 </div>
@@ -7883,12 +7883,8 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Use-Box-Plots-to-Show-How-the-Death-Rate-Changed-Before-and-After-Handwashing">Use Box Plots to Show How the Death Rate Changed Before and After Handwashing<a class="anchor-link" href="#Use-Box-Plots-to-Show-How-the-Death-Rate-Changed-Before-and-After-Handwashing">¶</a></h3><p><strong>Challenge</strong>:</p>
-<ul>
-<li>Use <a href="https://numpy.org/doc/stable/reference/generated/numpy.where.html">NumPy's <code>.where()</code> function</a> to add a column to <code>df_monthly</code> that shows if a particular date was before or after the start of handwashing.</li>
-<li>Then use plotly to create box plot of the data before and after handwashing.</li>
-<li>How did key statistics like the mean, max, min, 1st and 3rd quartile changed as a result of the new policy?</li>
-</ul>
+<h3 id="Did-Handwashing-Change-the-Distribution?">Did Handwashing Change the Distribution?<a class="anchor-link" href="#Did-Handwashing-Change-the-Distribution?">¶</a></h3><p>The aggregate rates already tell a story — the average monthly death rate drops from ~10.5% to ~5.0% after June 1846. But a mean alone can be pulled by a handful of extreme months. I want to see the full shape of each period: how wide the spread is, where the median sits, and whether the shift is broad-based or driven by outliers.</p>
+<p>I labelled each month by handwashing status using <code>np.where</code>, then plotted both periods as box plots.</p>
 </div>
 </div>
 </div>
@@ -7900,14 +7896,8 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Use-Histograms-to-Visualise-the-Monthly-Distribution-of-Outcomes">Use Histograms to Visualise the Monthly Distribution of Outcomes<a class="anchor-link" href="#Use-Histograms-to-Visualise-the-Monthly-Distribution-of-Outcomes">¶</a></h3><p><strong>Challenge</strong>: Create a <a href="https://plotly.com/python/histograms/">plotly histogram</a> to show the monthly percentage of deaths.</p>
-<ul>
-<li>Use docs to check out the available parameters. Use the <a href="https://plotly.github.io/plotly.py-docs/generated/plotly.express.histogram.html"><code>color</code> parameter</a> to display two overlapping histograms.</li>
-<li>The time period of handwashing is shorter than not handwashing. Change <code>histnorm</code> to <code>percent</code> to make the time periods comparable.</li>
-<li>Make the histograms slighlty transparent</li>
-<li>Experiment with the number of bins on the histogram. Which number work well in communicating the range of outcomes?</li>
-<li>Just for fun, display your box plot on the top of the histogram using the <code>marginal</code> parameter.</li>
-</ul>
+<h3 id="Overlapping-Distributions">Overlapping Distributions<a class="anchor-link" href="#Overlapping-Distributions">¶</a></h3><p>The box plot gives summary statistics but compresses the full shape. I want to see how often the death rate landed in any given range — and whether the two periods actually separate cleanly or overlap substantially.</p>
+<p>A normalised histogram (<code>histnorm='percent'</code>) puts both periods on a comparable scale despite the handwashing window being shorter. The marginal box lanes keep the quartile positions in view above the bars.</p>
 </div>
 </div>
 </div>
@@ -7918,12 +7908,8 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Use-a-Kernel-Density-Estimate-(KDE)-to-visualise-a-smooth-distribution">Use a Kernel Density Estimate (KDE) to visualise a smooth distribution<a class="anchor-link" href="#Use-a-Kernel-Density-Estimate-(KDE)-to-visualise-a-smooth-distribution">¶</a></h3><p><strong>Challenge</strong>: Use <a href="https://seaborn.pydata.org/generated/seaborn.kdeplot.html">Seaborn's <code>.kdeplot()</code></a> to create two kernel density estimates of the <code>pct_deaths</code>, one for before handwashing and one for after.</p>
-<ul>
-<li>Use the <code>shade</code> parameter to give your two distributions different colours.</li>
-<li>What weakness in the chart do you see when you just use the default parameters?</li>
-<li>Use the <code>clip</code> parameter to address the problem.</li>
-</ul>
+<h3 id="Kernel-Density-Estimate">Kernel Density Estimate<a class="anchor-link" href="#Kernel-Density-Estimate">¶</a></h3><p>Histograms are sensitive to bin width and can hide distribution shape. A kernel density estimate gives a smoother read of the underlying spread.</p>
+<p>The first pass uses default parameters — which extend the density curve into negative values, a mathematical artefact that has no meaning here. The second pass clips to <code>[0, 1]</code> to keep the estimate grounded in what the data can actually represent.</p>
 </div>
 </div>
 </div>
@@ -7935,13 +7921,8 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Use-a-T-Test-to-Show-Statistical-Significance">Use a T-Test to Show Statistical Significance<a class="anchor-link" href="#Use-a-T-Test-to-Show-Statistical-Significance">¶</a></h3><p><strong>Challenge</strong>: Use a t-test to determine if the differences in the means are statistically significant or purely due to chance.</p>
-<p>If the p-value is less than 1% then we can be 99% certain that handwashing has made a difference to the average monthly death rate.</p>
-<ul>
-<li>Import <code>stats</code> from scipy</li>
-<li>Use the <a href="https://docs.scipy.org/%5Ddoc/scipy/reference/generated/scipy.stats.ttest_ind.html"><code>.ttest_ind()</code> function</a> to calculate the t-statistic and the p-value</li>
-<li>Is the difference in the average proportion of monthly deaths statistically significant at the 99% level?</li>
-</ul>
+<h3 id="Testing-Whether-the-Drop-Is-Real">Testing Whether the Drop Is Real<a class="anchor-link" href="#Testing-Whether-the-Drop-Is-Real">¶</a></h3><p>The visual evidence is striking, but two distributions can look different by chance — especially with a sample this size (98 months total). I want a formal answer: is the gap between periods statistically significant, or could random variation explain it?</p>
+<p>An independent-samples t-test compares the difference in means relative to the variability within each group. A p-value below 0.01 means we can reject the null hypothesis — that handwashing had no effect — at the 99% confidence level.</p>
 </div>
 </div>
 </div>
@@ -7953,144 +7934,36 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="T-TEST-BREAKDOWN%E2%80%94%E2%80%94Use-a-T-Test-to-Show-Statistical-Significance**">T TEST BREAKDOWN——Use a T-Test to Show Statistical Significance**<a class="anchor-link" href="#T-TEST-BREAKDOWN%E2%80%94%E2%80%94Use-a-T-Test-to-Show-Statistical-Significance**">¶</a></h2><h3 id="Why-Do-We-Need-a-Statistical-Test?">Why Do We Need a Statistical Test?<a class="anchor-link" href="#Why-Do-We-Need-a-Statistical-Test?">¶</a></h3><p>We already saw that:</p>
-<ul>
-<li>Average death rate <strong>before</strong> handwashing ≈ 10.5%</li>
-<li>Average death rate <strong>after</strong> handwashing ≈ 5%</li>
-</ul>
-<p>That looks like a huge drop.</p>
-<p>But here’s the key question:</p>
-<blockquote>
-<p>Is this difference real… or could it just be random fluctuation?</p>
-</blockquote>
-<p>A <strong>t-test</strong> helps us answer that.</p>
+<h3 id="How-the-T-Test-Works">How the T-Test Works<a class="anchor-link" href="#How-the-T-Test-Works">¶</a></h3><h4 id="Hypotheses">Hypotheses<a class="anchor-link" href="#Hypotheses">¶</a></h4><p>We test two competing claims:</p>
+<p><strong>Null hypothesis</strong> $H_0$: there is no real difference between the average monthly death rate before and after handwashing. Any gap is random variation.</p>
+<p><strong>Alternative hypothesis</strong> $H_1$: the means differ — the handwashing policy had a real effect.</p>
 <hr/>
-<h2 id="Understanding-the-Statistical-Setup">Understanding the Statistical Setup<a class="anchor-link" href="#Understanding-the-Statistical-Setup">¶</a></h2><h3 id="Step-1-%E2%80%94-Define-the-Hypotheses">Step 1 — Define the Hypotheses<a class="anchor-link" href="#Step-1-%E2%80%94-Define-the-Hypotheses">¶</a></h3><p>We formally test two competing ideas:</p>
-<h4 id="Null-Hypothesis-(-$H_0$-)">Null Hypothesis ( $H_0$ )<a class="anchor-link" href="#Null-Hypothesis-(-$H_0$-)">¶</a></h4><p>$[
-H_0: \mu_{\text{before}} = \mu_{\text{after}}
-]
-$
-There is <strong>no real difference</strong> in average monthly death rates.</p>
-<p>Any difference we see is just random variation.</p>
-<h4 id="Alternative-Hypothesis-(-$H_1$-)">Alternative Hypothesis ( $H_1$ )<a class="anchor-link" href="#Alternative-Hypothesis-(-$H_1$-)">¶</a></h4><p>$[
-H_1: \mu_{\text{before}} \neq \mu_{\text{after}}
-]$</p>
-<p>There <em>is</em> a real difference between the two averages.</p>
+<h4 id="The-Test-Statistic">The Test Statistic<a class="anchor-link" href="#The-Test-Statistic">¶</a></h4><p>The t-statistic measures the difference in means relative to the expected random variation:</p>
+<p>$$
+t = \frac{\bar{x}_1 - \bar{x}_2}{\sqrt{\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}}}
+$$</p>
+<p>A large numerator (big difference in means) combined with a small denominator (low variability within each group) produces a large t — one unlikely to occur by chance.</p>
 <hr/>
-<h2 id="What-the-T-Test-Actually-Measures">What the T-Test Actually Measures<a class="anchor-link" href="#What-the-T-Test-Actually-Measures">¶</a></h2><p>The t-test compares:</p>
-<p>$[
-\text{Difference in means} \div \text{Expected random variation}
-]$</p>
-<p>In formula form:</p>
-<p>$[
-t =
-\frac{\bar{x}_1 - \bar{x}_2}
-{\sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}}
-]$</p>
-<p>Where:</p>
-<ul>
-<li>$( \bar{x}_1 )$ = mean before handwashing</li>
-<li>$( \bar{x}_2 )$ = mean after handwashing</li>
-<li>$( s_1^2 ), ( s_2^2 )$ = sample variances</li>
-<li>$( n_1 ), ( n_2 ) $= number of months in each period</li>
-</ul>
-<h3 id="Intuition">Intuition<a class="anchor-link" href="#Intuition">¶</a></h3><ul>
-<li>Big numerator → large difference in means</li>
-<li>Small denominator → low variability</li>
-<li>Large t-value → difference unlikely to be random</li>
-</ul>
+<h4 id="The-P-Value">The P-Value<a class="anchor-link" href="#The-P-Value">¶</a></h4><p>The p-value answers: if there were truly no difference, how probable is a t-statistic this extreme?</p>
+<p>$$
+p = 2 \cdot \left(1 - F_{T_\nu}(|t_{\text{observed}}|)\right)
+$$</p>
+<p>where $F_{T_\nu}$ is the CDF of the t-distribution with $\nu$ degrees of freedom.</p>
 <hr/>
-<h2 id="Running-the-Test-in-Python">Running the Test in Python<a class="anchor-link" href="#Running-the-Test-in-Python">¶</a></h2><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stats</span>
-
-<span class="n">t_stat</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ttest_ind</span><span class="p">(</span>
-    <span class="n">a</span><span class="o">=</span><span class="n">before_washing</span><span class="o">.</span><span class="n">pct_deaths</span><span class="p">,</span>
-    <span class="n">b</span><span class="o">=</span><span class="n">after_washing</span><span class="o">.</span><span class="n">pct_deaths</span>
-<span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'p-value is </span><span class="si">{</span><span class="n">p_value</span><span class="si">:</span><span class="s1">.10f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'t-statistic is </span><span class="si">{</span><span class="n">t_stat</span><span class="si">:</span><span class="s1">.4f</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
-</pre></div>
-<p>Your result:</p>
-<ul>
-<li>( t = 3.804 )</li>
-<li>( p = 0.0002504345 )</li>
-</ul>
-<hr/>
-<h2 id="What-Is-the-P-Value?">What Is the P-Value?<a class="anchor-link" href="#What-Is-the-P-Value?">¶</a></h2><p>The <strong>p-value</strong> answers this:</p>
-<blockquote>
-<p>If there were truly no real difference, how likely is it to observe a difference this extreme?</p>
-</blockquote>
-<p>For a two-sided test:</p>
-<p>$[
-p =
-2 \cdot P\left(T_{\nu} \ge |t_{\text{observed}}|\right)
-]$</p>
-<p>Equivalent CDF form:</p>
-<p>$[
-p =
-2 \cdot \left(1 - F_{T_\nu}(|t_{\text{observed}}|)\right)
-]$</p>
-<p>Where:</p>
-<ul>
-<li>$( T_\nu )$ = t-distribution with $( \nu )$ degrees of freedom</li>
-<li>$( F_{T_\nu} )$ = cumulative distribution function</li>
-</ul>
-<hr/>
-<h2 id="Degrees-of-Freedom">Degrees of Freedom<a class="anchor-link" href="#Degrees-of-Freedom">¶</a></h2><p>If equal variances are assumed:</p>
-<p>$[
+<h4 id="Degrees-of-Freedom">Degrees of Freedom<a class="anchor-link" href="#Degrees-of-Freedom">¶</a></h4><p>Assuming equal variances (SciPy default):</p>
+<p>$$
 \nu = n_1 + n_2 - 2
-]$</p>
-<p>If Welch’s version is used (<code>equal_var=False</code>), the degrees of freedom are approximated using:</p>
-<p>$[
-\nu \approx
-\frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}
-{\frac{\left(\frac{s_1^2}{n_1}\right)^2}{n_1-1} +
-\frac{\left(\frac{s_2^2}{n_2}\right)^2}{n_2-1}}
-]$</p>
-<p>SciPy uses equal variance by default unless specified otherwise.</p>
+$$</p>
+<p>Welch's approximation (used when <code>equal_var=False</code>) adjusts this downward when the two groups have unequal variance:</p>
+<p>$$
+\nu \approx \frac{\left(\dfrac{s_1^2}{n_1} + \dfrac{s_2^2}{n_2}\right)^2}{\dfrac{\left(\dfrac{s_1^2}{n_1}\right)^2}{n_1-1} + \dfrac{\left(\dfrac{s_2^2}{n_2}\right)^2}{n_2-1}}
+$$</p>
 <hr/>
-<h2 id="Interpreting-Our-Result">Interpreting Our Result<a class="anchor-link" href="#Interpreting-Our-Result">¶</a></h2><p>We obtained:</p>
-<p>$[
-p = 0.0002504
-]$</p>
-<p>That means:</p>
-<p>If handwashing had no real effect, there is only a <strong>0.025% chance</strong> we would observe a difference this large.</p>
-<p>Since:</p>
-<p>$[
-p &lt; 0.01
-]$</p>
-<p>We reject the null hypothesis at the <strong>99% confidence level</strong>.</p>
-<hr/>
-<h2 id="What-Does-This-Mean-in-Plain-English?">What Does This Mean in Plain English?<a class="anchor-link" href="#What-Does-This-Mean-in-Plain-English?">¶</a></h2><ul>
-<li>The drop in death rate is <strong>not random noise</strong>.</li>
-<li>It is statistically significant.</li>
-<li>The data strongly supports the idea that handwashing reduced mortality.</li>
+<h4 id="Result">Result<a class="anchor-link" href="#Result">¶</a></h4><ul>
+<li>$t = 3.804$</li>
+<li>$p = 0.0002504$</li>
 </ul>
-<hr/>
-<h2 id="Why-This-Is-So-Powerful-Historically">Why This Is So Powerful Historically<a class="anchor-link" href="#Why-This-Is-So-Powerful-Historically">¶</a></h2><p>Semmelweis didn’t just observe a drop.</p>
-<p>He could have said:</p>
-<blockquote>
-<p>The probability this happened by chance is 0.025%.</p>
-</blockquote>
-<p>That is overwhelming statistical evidence.</p>
-<hr/>
-<h2 id="Beginner-Level-Summary">Beginner-Level Summary<a class="anchor-link" href="#Beginner-Level-Summary">¶</a></h2><h3 id="What-We-Did">What We Did<a class="anchor-link" href="#What-We-Did">¶</a></h3><ol>
-<li>Calculated monthly death rates.</li>
-<li>Split data into before and after.</li>
-<li>Compared averages.</li>
-<li>Used a t-test to test if the difference is real.</li>
-</ol>
-<h3 id="What-the-T-Test-Does">What the T-Test Does<a class="anchor-link" href="#What-the-T-Test-Does">¶</a></h3><ul>
-<li>Measures how large the difference is relative to variation.</li>
-<li>Converts that into a probability (p-value).</li>
-</ul>
-<h3 id="What-the-P-Value-Means">What the P-Value Means<a class="anchor-link" href="#What-the-P-Value-Means">¶</a></h3><ul>
-<li>Very small p-value → very unlikely to be random.</li>
-<li>Our p-value is extremely small.</li>
-<li>Therefore: handwashing made a real difference.</li>
-</ul>
-<hr/>
-<p>If you'd like, next we can add a small visual intuition section explaining the t-distribution curve graphically so you fully <em>feel</em> what that p-value represents.</p>
+<p>If handwashing had no real effect, there is a <strong>0.025% chance</strong> of observing a difference this large. Since $p \ll 0.01$, we reject the null hypothesis at the 99% confidence level. The drop in death rate is not noise — it is statistically significant.</p>
 </div>
 </div>
 </div>
@@ -8100,8 +7973,42 @@ p &lt; 0.01
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>What do you conclude from your analysis, Doctor? 😊</p>
-<img alt="No description has been provided for this image" src="https://i.imgur.com/rvjNVzQ.gif"/>
+<hr/>
+<h3 id="Conclusions">Conclusions<a class="anchor-link" href="#Conclusions">¶</a></h3><p>The data makes a compelling case:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before June 1846</th>
+<th>After June 1846</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Avg. monthly death rate</td>
+<td>~10.5%</td>
+<td>~5.0%</td>
+</tr>
+<tr>
+<td>Absolute reduction</td>
+<td>—</td>
+<td>~5.5 pp</td>
+</tr>
+<tr>
+<td>Relative reduction</td>
+<td>—</td>
+<td>~52%</td>
+</tr>
+<tr>
+<td>p-value (t-test)</td>
+<td>—</td>
+<td>0.00025</td>
+</tr>
+</tbody>
+</table>
+<p>The handwashing policy introduced in June 1846 roughly halved the average monthly death rate. The t-test rules out chance at the 99% confidence level — this is not a statistical artefact.</p>
+<p>What makes this finding historically remarkable is the structural evidence that predates the intervention. Clinic 1, staffed by doctors who also performed autopsies, had a death rate roughly three times higher than Clinic 2, staffed by midwives with no autopsy contact. That difference — visible in the annual data years before handwashing began — is the analytical key. It isolates the contamination hypothesis without a controlled experiment.</p>
+<p>Semmelweis couldn't explain <em>why</em> it worked. Germ theory was still decades away. But the numbers were unambiguous, and they remain so today.</p>
 </div>
 </div>
 </div>
