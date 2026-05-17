@@ -12,7 +12,7 @@
 
 In 1840s Vienna, roughly one in ten women died during childbirth at Vienna General Hospital — a rate that remained stubbornly high even as the science of medicine advanced. Dr Ignaz Semmelweis noticed that one of the hospital's two maternity clinics was dramatically more lethal than the other and suspected a cause that no one else was willing to accept. This analysis re-examines the original hospital records he published in 1861 to answer a single question: did mandatory chlorine handwashing, introduced in June 1846, actually save lives?
 
-The data covers 98 monthly observations spanning 1841 to 1849 across both clinics. The pipeline walks from raw counts through death-rate computation, clinic comparison, time-series splitting, rolling averages, distributional analysis, and a formal hypothesis test. The central finding is unambiguous: the average monthly death rate dropped from 10.5% before handwashing to 5.0% after, a reduction confirmed statistically significant at p < 0.01 (p ≈ 0.00025) by an independent-samples t-test.
+The data covers 98 monthly observations spanning 1841 to 1849. The pipeline walks from raw counts through death-rate computation, clinic comparison, time-series splitting, distributional analysis, and a formal hypothesis test. The central finding is unambiguous: the average monthly death rate dropped from 10.5% before handwashing to 5.0% after, a reduction confirmed statistically significant at p < 0.01 (p ≈ 0.00025) by an independent-samples t-test.
 
 Clinic 1, staffed by doctors who also performed autopsies, carried a death rate roughly three times higher than Clinic 2, staffed by midwives with no autopsy contact. That structural difference is the analytical key — it isolates the contamination hypothesis without a controlled experiment. The data is taken directly from Semmelweis's published tables; no external services or APIs are required.
 
@@ -23,9 +23,9 @@ Clinic 1, staffed by doctors who also performed autopsies, carried a death rate 
 1. [Quick Start](#1-quick-start)
 2. [Analysis Flow](#2-analysis-flow)
 3. [Key Findings](#3-key-findings)
-4. [Dataset Schema](#4-dataset-schema)
-5. [Architecture](#5-architecture)
-6. [Visualisations](#6-visualisations)
+4. [Visualisations](#4-visualisations)
+5. [Dataset Schema](#5-dataset-schema)
+6. [Architecture](#6-architecture)
 7. [Operations Reference](#7-operations-reference)
 8. [Background](#8-background)
 9. [Dependencies](#9-dependencies)
@@ -65,7 +65,6 @@ pipeline
     ├── pd.to_datetime()                          →  parse date column
     ├── boolean filter on date                   →  before / after split
     ├── np.where()                               →  washing_hands label
-    ├── .set_index('date').rolling(6).mean()     →  6-month moving avg
     │
     │  ── [Insight] ──────────────────────────────────────────────────
     ├── Clinic comparison  →  Clinic 1 death rate ~3× higher than Clinic 2
@@ -73,23 +72,63 @@ pipeline
     ├── t-test (p < 0.01) →  reduction is statistically significant
     │
     │  ── [Visualisation] ────────────────────────────────────────────
-    └── twin-axis line / plotly line+box+histogram / seaborn KDE  →  charts
+    └── plotly box + histogram / seaborn KDE  →  charts saved to plots/
 ```
 
 ---
 
 ## 3. Key Findings
 
+| Metric | Before June 1846 | After June 1846 |
+|--------|-----------------|----------------|
+| Avg. monthly death rate | ~10.5% | ~5.0% |
+| Absolute reduction | — | ~5.5 pp |
+| Relative reduction | — | ~52% |
+| p-value (t-test) | — | 0.00025 |
+
 - **Overall mortality**: ~10% of women who gave birth at Vienna General Hospital in the 1840s died, primarily from childbed fever
-- **Clinic 1 vs Clinic 2**: Clinic 1 (doctors with autopsy duties) had an average death rate roughly 3× higher than Clinic 2 (midwives only)
-- **Before handwashing** (pre-June 1846): average monthly death rate ≈ 10.5%
-- **After handwashing** (from June 1846): average monthly death rate ≈ 5.0% — approximately half the previous rate
-- **Absolute reduction**: ~5.5 percentage points; handwashing roughly doubled survival odds
-- **Statistical significance**: independent-samples t-test yields p ≈ 0.00025, well below the 1% threshold — the improvement is not due to chance
+- **Clinic 1 vs Clinic 2**: Clinic 1 (doctors with autopsy duties) had an average death rate roughly 3× higher than Clinic 2 (midwives only) — this structural gap predates the handwashing intervention and isolates the contamination mechanism without a controlled experiment
+- **Statistical significance**: independent-samples t-test yields t = 3.80, p ≈ 0.00025 — well below the 1% threshold; the improvement is not due to chance
 
 ---
 
-## 4. Dataset Schema
+## 4. Visualisations
+
+All charts are saved to `plots/` when the notebook is run.
+
+### Death Rate Distribution: Before vs After Handwashing
+
+![Box plot showing death rate distribution before and after handwashing](plots/death_rate_box.png)
+
+The median monthly death rate fell from ~10% to ~3.5%. The entire distribution shifted down — this is not driven by outlier removal.
+
+---
+
+### Overlapping Distributions (Normalised Histogram)
+
+![Histogram showing overlapping distributions before and after handwashing](plots/death_rate_histogram.png)
+
+Normalised to percent to account for the unequal period lengths (63 months before, 35 after). The post-handwashing distribution is concentrated at lower death rates with minimal overlap above 10%.
+
+---
+
+### Kernel Density Estimate — Default Parameters
+
+![KDE with default parameters extending into negative values](plots/death_rate_kde_unclipped.png)
+
+Default KDE parameters extend the density curve into negative values — a mathematical artefact with no physical meaning.
+
+---
+
+### Kernel Density Estimate — Clipped to [0, 1]
+
+![KDE clipped to valid range showing two distributions](plots/death_rate_kde.png)
+
+Clipping to `[0, 1]` keeps the estimate grounded. The two distributions barely overlap: before handwashing peaks near 10%, after handwashing peaks near 2–3%.
+
+---
+
+## 5. Dataset Schema
 
 ### `data/annual_deaths_by_clinic.csv`
 
@@ -117,14 +156,14 @@ pipeline
 
 ---
 
-## 5. Architecture
+## 6. Architecture
 
 ```
 semmelweis-handwashing-data-analysis/
 │
 ├── notebooks/
 │   ├── analysis/
-│   │   └── semmelweis_handwashing_analysis.ipynb  # Full analysis: exploration → clinic comparison → handwashing effect → t-test
+│   │   └── semmelweis_handwashing_analysis.ipynb  # Full analysis: exploration → clinic comparison → distributions → t-test
 │   │
 │   └── concepts/                    # Annotated reference notebooks
 │       ├── 00__Overview.ipynb
@@ -138,7 +177,11 @@ semmelweis-handwashing-data-analysis/
 │   ├── annual_deaths_by_clinic.csv  # Yearly births and deaths by clinic (1841–1846)
 │   └── monthly_deaths.csv           # Monthly births and deaths (1841–1849)
 │
-├── plots/                           # Charts saved at 150 dpi
+├── plots/                           # Charts saved at 150 dpi on notebook run
+│   ├── death_rate_box.png
+│   ├── death_rate_histogram.png
+│   ├── death_rate_kde_unclipped.png
+│   └── death_rate_kde.png
 │
 ├── notebook_web_render/             # Rendered HTML for GitHub Pages
 │   └── index.html                   # Generated by CI/CD on every push to main
@@ -157,34 +200,14 @@ semmelweis-handwashing-data-analysis/
 
 ---
 
-## 6. Visualisations
-
-All charts are saved to `plots/` at 150 dpi.
-
-| File | Description |
-|------|-------------|
-| `monthly_births_deaths_overview.png` | Twin-axis line chart: raw monthly birth and death counts, 1841–1849 |
-| `monthly_births_deaths.png` | Twin-axis line chart with full labels and legend |
-| `yearly_births_by_clinic.png` | Plotly line: annual births split by clinic |
-| `yearly_deaths_by_clinic.png` | Plotly line: annual deaths split by clinic |
-| `yearly_death_pct_by_clinic.png` | Plotly line: proportional death rate by clinic, year over year |
-| `monthly_death_rate_rolling_avg.png` | Three-series chart: raw rate before/after, 6-month moving average |
-| `death_rate_kde_unclipped.png` | KDE of monthly death rates (default parameters) |
-| `death_rate_kde.png` | KDE of monthly death rates clipped to [0, 1] with legend |
-| `death_rate_box.png` | Plotly box plot: death rate distribution before vs after handwashing |
-| `death_rate_histogram.png` | Plotly histogram: overlapping normalised monthly death rate distributions |
-
----
-
 ## 7. Operations Reference
 
 | Value | Location | Description |
 |-------|----------|-------------|
 | `'../../data/annual_deaths_by_clinic.csv'` | semmelweis_handwashing_analysis.ipynb | Relative path to yearly dataset |
 | `'../../data/monthly_deaths.csv'` | semmelweis_handwashing_analysis.ipynb | Relative path to monthly dataset |
-| `pd.to_datetime('1846-06-01')` | A_03, A_04 | Handwashing start date |
-| `window=6` | A_03 | Rolling average window in months |
-| `'{:,.2f}'.format` | all notebooks | Float display format for pandas output |
+| `pd.to_datetime('1846-06-01')` | semmelweis_handwashing_analysis.ipynb | Handwashing start date |
+| `'{:,.2f}'.format` | semmelweis_handwashing_analysis.ipynb | Float display format for pandas output |
 | `dpi=150` | Matplotlib figures | Output resolution for saved plots |
 
 ---
@@ -205,11 +228,12 @@ English translation: http://graphics8.nytimes.com/images/blogs/freakonomics/pdf/
 
 | Module | Used in | Purpose |
 |--------|---------|---------|
-| pandas | all notebooks | DataFrames, CSV I/O, date parsing, rolling averages |
+| pandas | all notebooks | DataFrames, CSV I/O, date parsing |
 | numpy | semmelweis_handwashing_analysis.ipynb | `np.where()` for categorical labelling |
-| matplotlib | semmelweis_handwashing_analysis.ipynb | Twin-axis line charts, time axis formatting |
+| matplotlib | semmelweis_handwashing_analysis.ipynb | Figure setup, time axis formatting |
 | seaborn | semmelweis_handwashing_analysis.ipynb | KDE plots with clipping |
-| plotly | semmelweis_handwashing_analysis.ipynb | Interactive line, box, and histogram charts |
+| plotly | semmelweis_handwashing_analysis.ipynb | Interactive box and histogram charts |
+| kaleido | semmelweis_handwashing_analysis.ipynb | Static image export for plotly (`write_image`) |
 | scipy | semmelweis_handwashing_analysis.ipynb | `stats.ttest_ind()` — independent samples t-test |
 | notebook | — | Jupyter notebook server |
 

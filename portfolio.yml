@@ -11,10 +11,10 @@ demo_url:
 notebook_url: https://xavier-oc-programming.github.io/semmelweis-handwashing-data-analysis/notebook_web_render/
 
 short_description: |
-  In 1840s Vienna, roughly 10% of women died in childbirth. This analysis of Semmelweis hospital records measures the impact of mandatory chlorine handwashing, introduced in June 1846, which cut the monthly death rate from 10.5% to 5.0% — confirmed statistically at p < 0.01.
+  Re-examination of Dr Semmelweis's 1861 hospital records from Vienna General Hospital (1841–1849). Mandatory handwashing in June 1846 cut the average monthly death rate from 10.5% to 5.0% — confirmed statistically at p ≈ 0.00025.
 
 full_description: |
-  This project re-analyses the original hospital records published by Dr Ignaz Semmelweis in 1861. The data covers 98 monthly observations across two maternity clinics at Vienna General Hospital from 1841 to 1849, with yearly aggregates that reveal a striking gap between Clinic 1 (staffed by doctors who also performed autopsies) and Clinic 2 (staffed by midwives with no autopsy contact). The pipeline runs from raw CSV ingestion through death-rate computation, clinic comparison, time-series splitting, rolling averages, distributional analysis, and a formal hypothesis test.
+  This project re-examines the original hospital records published by Dr Ignaz Semmelweis in 1861. The data covers 98 monthly observations across two maternity clinics at Vienna General Hospital from 1841 to 1849, with yearly aggregates that reveal a stark gap between Clinic 1 (staffed by doctors who also performed autopsies) and Clinic 2 (staffed by midwives with no autopsy contact). The pipeline runs from raw CSV ingestion through death-rate computation, clinic comparison, time-series splitting, distributional analysis, and a formal hypothesis test.
 
   Mandatory chlorine handwashing, introduced in June 1846, cut the average monthly death rate from 10.5% to 5.0% — an absolute reduction of roughly 5.5 percentage points and approximately a twofold improvement in survival odds. Clinic 1 carried a death rate around three times higher than Clinic 2, isolating contamination from the autopsy room as the mechanism without the need for a controlled experiment. An independent-samples t-test yields t = 3.80, p = 0.00025, rejecting the null hypothesis at the 99% confidence level: the improvement is not due to random variation.
 
@@ -22,17 +22,17 @@ problem: |
   In the 1840s, childbed fever killed roughly one in ten women who gave birth at Vienna General Hospital. The cause was unknown and the mortality gap between the hospital's two clinics — one dramatically more lethal than the other — had no accepted explanation. The analytical problem is to determine whether a single procedural change (mandatory handwashing) caused the observed drop in deaths, or whether the improvement could be attributed to chance and natural variation.
 
 solution: |
-  The analysis splits the monthly dataset at June 1846 and computes a normalised death rate (deaths / births) for each period. A six-month rolling average smooths month-to-month noise to reveal the underlying trend. Distributional differences between the two periods are visualised using Plotly box plots and histograms (with histnorm='percent' to correct for unequal period lengths) and a Seaborn KDE clipped to [0, 1] to avoid the physically impossible negative-rate tail produced by default kernel estimation. An independent-samples t-test from scipy.stats formalises whether the difference in means exceeds what random variation could explain.
+  The analysis splits the monthly dataset at June 1846 and computes a normalised death rate (deaths / births) for each period. Distributional differences between the two periods are visualised using Plotly box plots and histograms (with histnorm='percent' to correct for unequal period lengths) and a Seaborn KDE clipped to [0, 1] to avoid the physically impossible negative-rate tail produced by default kernel estimation. An independent-samples t-test from scipy.stats formalises whether the difference in means exceeds what random variation could explain.
 
 challenges: |
   - The pre- and post-handwashing periods are not equal in length: 63 months before, 35 after. Raw histogram counts would make the shorter post-handwashing period look smaller even if its rates were identical, requiring normalisation to percent before comparison.
-  - KDE estimation by default extends into negative death-rate territory, producing a misleading curve. Clipping to [0, 1] is necessary to represent the distribution honestly, and the unclipped version is retained in the notebooks to show why the default fails.
+  - KDE estimation by default extends into negative death-rate territory, producing a misleading curve. Clipping to [0, 1] is necessary to represent the distribution honestly; the unclipped version is retained to show why the default fails.
   - The two clinics had different patient volumes year to year, so comparing raw death counts instead of proportional rates would confound size differences with outcome differences. Computing pct_deaths before any clinic comparison is a prerequisite for valid inference.
 
 results: |
   - Overall probability of dying in childbirth at Vienna General Hospital in the 1840s: approximately 10%
-  - Clinic 1 average annual death rate: approximately 10.5%; Clinic 2: approximately 3.9% — a gap of roughly 3x
+  - Clinic 1 average annual death rate: approximately 10.5%; Clinic 2: approximately 3.9% — a gap of roughly 3×
   - Average monthly death rate before handwashing (pre-June 1846): 10.53%
   - Average monthly death rate after handwashing (from June 1846): 5.02%
-  - Absolute reduction: approximately 5.5 percentage points; relative improvement: approximately 2x
+  - Absolute reduction: approximately 5.5 percentage points; relative improvement: approximately 52%
   - t-statistic: 3.80; p-value: 0.00025 — statistically significant at the 99% confidence level
